@@ -11,8 +11,8 @@ provider "libvirt" {
 }
 
 
-resource "libvirt_volume" "ubuntu-qcow2" {
-  name = "docker-server.qcow2"
+resource "libvirt_volume" "kubernetes_master_qcow2" {
+  name = "kubernetes_master.qcow2"
   pool = "default"
 
   source = "/var/lib/libvirt/images/docker-server-ubuntu-20.04-server-cloudimg-amd64.qcow2"
@@ -21,39 +21,39 @@ resource "libvirt_volume" "ubuntu-qcow2" {
 
 # Define network as bridge
 resource "libvirt_network" "bridge_network" {
-  name = "bridge-network"
+  name = "bridge_network"
   mode = "bridge"
   bridge = "br0"
   autostart = true
 }
-data "template_file" "user_data" {
+data "template_file" "kubernetes_master_user_data" {
   template = "${file("${path.module}/cloud_init.cfg")}"
 }
-data "template_file" "network_config" {
-  template = "${file("${path.module}/network_config.yml")}"
+data "template_file" "kubernetes_master_network_config" {
+  template = "${file("${path.module}/kubernetes_master_network_config.yml")}"
 }
 # Use CloudInit to add the instance
-resource "libvirt_cloudinit_disk" "commoninit" {
-  name = "docker-server-commoninit.iso"
-  user_data      = "${data.template_file.user_data.rendered}"
-  network_config = "${data.template_file.network_config.rendered}"
+resource "libvirt_cloudinit_disk" "kubernetes_master_commoninit" {
+  name = "kubernetes_master_commoninit.iso"
+  kubernetes_master_user_data      = "${data.template_file.kubernetes_master_user_data.rendered}"
+  kubernetes_master_network_config = "${data.template_file.kubernetes_master_network_config.rendered}"
 }
 
 # Define KVM domain to create
-resource "libvirt_domain" "docker-server" {
-  name   = "docker-server"
+resource "libvirt_domain" "kubernetes_master" {
+  name   = "kubernetes_master"
   memory = "4096"
   vcpu   = 2
 
   network_interface {
-    network_name = "bridge-network"
+    network_name = "bridge_network"
   }
 
   disk {
-    volume_id = "${libvirt_volume.ubuntu-qcow2.id}"
+    volume_id = "${libvirt_volume.kubernetes_master_qcow2.id}"
   }
 
-  cloudinit = "${libvirt_cloudinit_disk.commoninit.id}"
+  cloudinit = "${libvirt_cloudinit_disk.kubernetes_master_commoninit.id}"
 
   console {
     type = "pty"
@@ -70,6 +70,6 @@ resource "libvirt_domain" "docker-server" {
 
 # Output Server IP
 output "ip" {
-  value = "${libvirt_domain.docker-server.network_interface.0}"
+  value = "${libvirt_domain.kubernetes_master.network_interface.0}"
 }
 
