@@ -1,0 +1,120 @@
+---
+- hosts: master
+  become: true
+  tasks:
+  - name: Install packages that allow apt to be used over HTTPS
+    apt:
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - containerd
+
+  - name: Creates directory for containerd
+    file:
+      path: /etc/containerd
+      state: directory
+  
+  - name: Creates kubelet folder
+    file:
+      path: /etc/default/kubelet
+      state: touch
+      mode: 0644
+
+  - name: Configure containerd and start the service
+    command: containerd config default  /etc/containerd/config.toml
+
+  - name: Add the overlay module
+    modprobe:
+      name: overlay
+      state: present
+
+  - name: Add the br_netfilter module
+    modprobe:
+      name: br_netfilter
+      state: present
+
+  - sysctl:
+      name: net.bridge.bridge-nf-call-iptables
+      value: 1
+      sysctl_set: yes
+      state: present
+      reload: yes
+
+  - sysctl:
+      name: net.ipv4.ip_forward
+      value: 1
+      sysctl_set: yes
+      state: present
+      reload: yes
+
+  - name: Add an apt signing key for Kubernetes
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+
+  - name: Adding apt repository for Kubernetes
+    apt_repository:
+      repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+      filename: kubernetes.list
+
+  - name: Install Kubernetes binaries
+    apt: 
+      name: "{{ packages }}"
+      state: present
+      update_cache: yes
+    vars:
+      packages:
+        - kubelet 
+        - kubeadm 
+        - kubectl
+
+  - name: Install Helm
+    command: curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+
+  - name: Change mode of get_helm.sh
+    command: chmod 700 get_helm.sh
+
+  - name: Execute get_helm.sh
+    command: bash get_helm.sh
+
+  - name: Configure node ip
+    lineinfile:
+      path: /etc/default/kubelet
+      line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
+
+  - name: Restart kubelet
+    service:
+      name: kubelet
+      daemon_reload: yes
+      state: restarted
+
+  - name: Initialize the Kubernetes cluster using kubeadm
+    command: kubeadm init --apiserver-advertise-address="192.168.15.20" --apiserver-cert-extra-sans="192.168.15.20"  --node-name enki --pod-network-cidr=172.16.0.0/16
+    ignore_errors: yes
+
+  - name: Setup kubeconfig for vagrant user
+    command: "{{ item }}"
+    with_items:
+     - mkdir -p /home/vagrant/.kube
+     - cp -i /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+     - chown vagrant:vagrant /home/vagrant/.kube/config
+
+  - name: Install weave pod network
+    become: false
+    command: kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=Q2xpZW50IFZlcnNpb246IHZlcnNpb24uSW5mb3tNYWpvcjoiMSIsIE1pbm9yOiIyMSIsIEdpdFZlcnNpb246InYxLjIxLjEiLCBHaXRDb21taXQ6IjVlNTg4NDFjY2U3N2Q0YmMxMzcxM2FkMmI5MWZhMGQ5NjFlNjkxOTIiLCBHaXRUcmVlU3RhdGU6ImNsZWFuIiwgQnVpbGREYXRlOiIyMDIxLTA1LTEyVDE0OjE4OjQ1WiIsIEdvVmVyc2lvbjoiZ28xLjE2LjQiLCBDb21waWxlcjoiZ2MiLCBQbGF0Zm9ybToibGludXgvYW1kNjQifQpTZXJ2ZXIgVmVyc2lvbjogdmVyc2lvbi5JbmZve01ham9yOiIxIiwgTWlub3I6IjIxIiwgR2l0VmVyc2lvbjoidjEuMjEuMSIsIEdpdENvbW1pdDoiNWU1ODg0MWNjZTc3ZDRiYzEzNzEzYWQyYjkxZmEwZDk2MWU2OTE5MiIsIEdpdFRyZWVTdGF0ZToiY2xlYW4iLCBCdWlsZERhdGU6IjIwMjEtMDUtMTJUMTQ6MTI6MjlaIiwgR29WZXJzaW9uOiJnbzEuMTYuNCIsIENvbXBpbGVyOiJnYyIsIFBsYXRmb3JtOiJsaW51eC9hbWQ2NCJ9Cg=="
+
+  - name: Generate join command
+    command: kubeadm token create --print-join-command
+    register: join_command
+
+  - name: Copy join-command file to local file
+    become: false
+    local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./join-command"

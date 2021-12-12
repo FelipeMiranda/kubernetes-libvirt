@@ -1,0 +1,10 @@
+enki ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222 ansible_ssh_user='vagrant' 
+enlil ansible_ssh_host=127.0.0.1 ansible_ssh_port=2200 ansible_ssh_user='vagrant' 
+utu ansible_ssh_host=127.0.0.1 ansible_ssh_port=2201 ansible_ssh_user='vagrant' 
+
+[master]
+enki
+
+[workers]
+enlil
+utu

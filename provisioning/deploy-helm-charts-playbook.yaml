@@ -1,0 +1,55 @@
+---
+- hosts: master
+  become: true
+  tasks:
+  - name: Add bitnami chart repo
+    community.kubernetes.helm_repository:
+      name: bitnami
+      repo_url: "https://charts.bitnami.com/bitnami"
+      binary_path: "/usr/local/bin/helm"
+    become: false
+
+  - name: Add ingress-nginx chart repo
+    community.kubernetes.helm_repository:
+      name: ingress-nginx
+      repo_url: "https://kubernetes.github.io/ingress-nginx"
+      binary_path: "/usr/local/bin/helm"
+    become: false
+
+  - name: Values for Metal LB
+    ansible.builtin.copy:
+      src: ./helm-values/metal-lb-values.yaml
+      dest: /home/vagrant/metal-lb-values.yaml
+      owner: vagrant
+      group: vagrant
+      mode: '0644'
+
+  - name: Values for ingress-nginx
+    ansible.builtin.copy:
+      src: ./helm-values/ingress-nginx-values.yaml
+      dest: /home/vagrant/ingress-nginx-values.yaml
+      owner: vagrant
+      group: vagrant
+      mode: '0644'
+
+  - name: Deploy Metal LB chart using values files on target
+    community.kubernetes.helm:
+      name: metal-lb
+      chart_ref: bitnami/metallb
+      release_namespace: kube-system
+      binary_path: "/usr/local/bin/helm"
+      kubeconfig: "/home/vagrant/.kube/config"
+      values_files:
+        - /home/vagrant/metal-lb-values.yaml
+    become: false
+
+  - name: Deploy ingress-nginx chart using values files on target
+    community.kubernetes.helm:
+      name: ingress-nginx-enki
+      chart_ref: ingress-nginx/ingress-nginx
+      release_namespace: kube-system
+      binary_path: "/usr/local/bin/helm"
+      kubeconfig: "/home/vagrant/.kube/config"
+      values_files:
+        - /home/vagrant/ingress-nginx-values.yaml
+    become: false
