@@ -27,13 +27,13 @@ resource "libvirt_network" "bridge_network" {
   autostart = true
 }
 data "template_file" "kubernetes_master_user_data" {
-  template = "${file("${path.module}/cloud_init.cfg")}"
+  template = "${file("${path.module}/kubernetes_master_cloud_init.cfg")}"
 }
 data "template_file" "kubernetes_master_network_config" {
   template = "${file("${path.module}/kubernetes_master_network_config.yml")}"
 }
 # Use CloudInit to add the instance
-resource "libvirt_cloudinit_disk" "kubernetes_master_commoninit" {
+resource "libvirt_cloudinit_disk" "commoninit" {
   name = "kubernetes_master_commoninit.iso"
   kubernetes_master_user_data      = "${data.template_file.kubernetes_master_user_data.rendered}"
   kubernetes_master_network_config = "${data.template_file.kubernetes_master_network_config.rendered}"
