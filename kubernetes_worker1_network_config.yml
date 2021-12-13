@@ -6,7 +6,7 @@ version: 2
 ethernets:
   ens3:
     addresses:
-      - 192.168.2.50/24
+      - 192.168.2.61/24
       - 192.168.2.51/24
     gateway4: 192.168.2.1
     nameservers:

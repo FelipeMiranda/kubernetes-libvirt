@@ -1,8 +1,8 @@
 ---
 - hosts: workers
   vars:
-    worker_01_node_ip: 192.168.2.50
-    worker_02_node_ip: 192.168.2.52
+    worker_01_node_ip: 192.168.2.61
+    worker_02_node_ip: 192.168.2.62
   become: true
   tasks:
   - name: Install packages that allow apt to be used over HTTPS
