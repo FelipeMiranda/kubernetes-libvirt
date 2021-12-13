@@ -19,17 +19,17 @@
   - name: Values for Metal LB
     ansible.builtin.copy:
       src: ./helm-values/metal-lb-values.yaml
-      dest: /home/vagrant/metal-lb-values.yaml
-      owner: vagrant
-      group: vagrant
+      dest: /home/ubuntu/metal-lb-values.yaml
+      owner: ubuntu
+      group: ubuntu
       mode: '0644'
 
   - name: Values for ingress-nginx
     ansible.builtin.copy:
       src: ./helm-values/ingress-nginx-values.yaml
-      dest: /home/vagrant/ingress-nginx-values.yaml
-      owner: vagrant
-      group: vagrant
+      dest: /home/ubuntu/ingress-nginx-values.yaml
+      owner: ubuntu
+      group: ubuntu
       mode: '0644'
 
   - name: Deploy Metal LB chart using values files on target
@@ -38,9 +38,9 @@
       chart_ref: bitnami/metallb
       release_namespace: kube-system
       binary_path: "/usr/local/bin/helm"
-      kubeconfig: "/home/vagrant/.kube/config"
+      kubeconfig: "/home/ubuntu/.kube/config"
       values_files:
-        - /home/vagrant/metal-lb-values.yaml
+        - /home/ubuntu/metal-lb-values.yaml
     become: false
 
   - name: Deploy ingress-nginx chart using values files on target
@@ -49,7 +49,7 @@
       chart_ref: ingress-nginx/ingress-nginx
       release_namespace: kube-system
       binary_path: "/usr/local/bin/helm"
-      kubeconfig: "/home/vagrant/.kube/config"
+      kubeconfig: "/home/ubuntu/.kube/config"
       values_files:
-        - /home/vagrant/ingress-nginx-values.yaml
+        - /home/ubuntu/ingress-nginx-values.yaml
     become: false
