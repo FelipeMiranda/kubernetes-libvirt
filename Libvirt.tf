@@ -91,6 +91,7 @@ resource "libvirt_domain" "kubernetes_master" {
   name   = "kubernetes_master"
   memory = "4096"
   vcpu   = 2
+  autostart = true
 
   network_interface {
     network_name = "bridge_network"
@@ -121,6 +122,7 @@ resource "libvirt_domain" "kubernetes_worker1" {
   name   = "kubernetes_worker1"
   memory = "4096"
   vcpu   = 2
+  autostart = true
 
   network_interface {
     network_name = "bridge_network"
@@ -151,6 +153,7 @@ resource "libvirt_domain" "kubernetes_worker2" {
   name   = "kubernetes_worker2"
   memory = "4096"
   vcpu   = 2
+  autostart = true
 
   network_interface {
     network_name = "bridge_network"
