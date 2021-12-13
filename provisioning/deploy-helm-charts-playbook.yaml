@@ -3,14 +3,14 @@
   become: true
   tasks:
   - name: Add bitnami chart repo
-    community.kubernetes.helm_repository:
+    kubernetes.core.helm_repository:
       name: bitnami
       repo_url: "https://charts.bitnami.com/bitnami"
       binary_path: "/usr/local/bin/helm"
     become: false
 
   - name: Add ingress-nginx chart repo
-    community.kubernetes.helm_repository:
+    kubernetes.core.helm_repository:
       name: ingress-nginx
       repo_url: "https://kubernetes.github.io/ingress-nginx"
       binary_path: "/usr/local/bin/helm"
