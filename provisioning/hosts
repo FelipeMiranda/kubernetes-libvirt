@@ -1,10 +1,10 @@
-enki ansible_ssh_host=127.0.0.1 ansible_ssh_port=2222 ansible_ssh_user='vagrant' 
-enlil ansible_ssh_host=127.0.0.1 ansible_ssh_port=2200 ansible_ssh_user='vagrant' 
-utu ansible_ssh_host=127.0.0.1 ansible_ssh_port=2201 ansible_ssh_user='vagrant' 
+k8s_master ansible_ssh_host=192.168.2.54 ansible_ssh_port=22 ansible_ssh_user='ubuntu' 
+k8s_worker1 ansible_ssh_host=192.168.2.50 ansible_ssh_port=22 ansible_ssh_user='ubuntu' 
+k8s_worker2 ansible_ssh_host=192.168.2.52 ansible_ssh_port=22 ansible_ssh_user='ubuntu' 
 
 [master]
-enki
+k8s_master
 
 [workers]
-enlil
-utu
+k8s_worker1
+k8s_worker2
