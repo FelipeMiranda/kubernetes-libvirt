@@ -20,14 +20,14 @@ resource "libvirt_volume" "kubernetes_master_qcow2" {
   format = "qcow2"
 }
 resource "libvirt_volume" "kubernetes_worker1_qcow2" {
-  name = "kubernetes_master.qcow2"
+  name = "kubernetes_worker1.qcow2"
   pool = "default"
 
   source = "/var/lib/libvirt/images/docker-server-ubuntu-20.04-server-cloudimg-amd64.qcow2"
   format = "qcow2"
 }
 resource "libvirt_volume" "kubernetes_worker2_qcow2" {
-  name = "kubernetes_master.qcow2"
+  name = "kubernetes_worker2.qcow2"
   pool = "default"
 
   source = "/var/lib/libvirt/images/docker-server-ubuntu-20.04-server-cloudimg-amd64.qcow2"
