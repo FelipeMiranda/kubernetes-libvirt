@@ -1,5 +1,7 @@
 ---
 - hosts: master
+  vars:
+    node_ip: 192.168.2.52
   become: true
   tasks:
   - name: Install packages that allow apt to be used over HTTPS

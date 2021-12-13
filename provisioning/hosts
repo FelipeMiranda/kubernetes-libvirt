@@ -5,6 +5,13 @@ k8s_worker2 ansible_ssh_host=192.168.2.52 ansible_ssh_port=22 ansible_ssh_user='
 [master]
 k8s_master
 
+[master:vars]
+node_ip="192.168.2.52"
+
 [workers]
 k8s_worker1
 k8s_worker2
+
+[workers:vars]
+worker_01_node_ip="192.168.2.50"
+worker_02_node_ip="192.168.2.52"
