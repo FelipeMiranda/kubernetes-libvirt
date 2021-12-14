@@ -38,6 +38,49 @@ To provision all that you'll use Terraform and Ansible.
 * CPU = 2
 * Disk = 40 GB Free Space ( /var/lib/libvirtd)
 
+### Requiriments
+#### OpenSUSE 15.3 with KVM
+1. Verify Whether Your System’s Processor Support Hardware Virtualization
+```
+$ sudo egrep -c '(vmx|svm)' /proc/cpuinfo
+2
+```
+If output of below command is equal to 1 or more than 1 then we can say hardware virtualization is enabled else reboot your system, go to bios settings and enable the hardware virtualization by enabling the Intel VT or AMD virtualization
+2. Install KVM and its dependencies using Zypper command
+```
+$ sudo zypper -n install patterns-openSUSE-kvm_server patterns-server-kvm_tools
+```
+3. Start and enable libvirtd service
+```
+$ sudo systemctl enable libvirtd
+Created symlink /etc/systemd/system/multi-user.target.wants/libvirtd.service → /usr/lib/systemd/system/libvirtd.service.
+Created symlink /etc/systemd/system/sockets.target.wants/virtlockd.socket → /usr/lib/systemd/system/virtlockd.socket.
+Created symlink /etc/systemd/system/sockets.target.wants/virtlogd.socket → /usr/lib/systemd/system/virtlogd.socket.
+```
+```
+$ sudo systemctl restart libvirtd
+```
+Note: If KVM module is not loaded after package installation then run below command to load it,
+* For Intel based systems
+```
+$ sudo modprobe kvm-intel
+```
+* For AMD based systems
+```
+$ sudo modprobe kvm-amd
+```
+4. Create Bridge and add Interface to it
+Let’s create a bride with name Br0 but before make sure bridge-utils package is installed, in case it is not installed then use the below zypper command to install it,
+```
+$ sudo zypper install bridge-utils
+````
+Now Start the Yast2 tool,
+
+**Yast2** –> **Network Settings** –> click on Add option
+![](docs/image/Add-Bridge-SUSE-KVM.jpg)
+
+In the next window select the Device type as “Bridge” and Configuration Name as “br0”
+![](docs/image/Device-Type-Bridge-Name-OpenSUSE-KVM.jpg)
 ### Ansible Playbooks
 
 There´s 3 playbooks, that are only executed on the 3rd node, because of a Vagrant limitation on a multi-machine cenario.
