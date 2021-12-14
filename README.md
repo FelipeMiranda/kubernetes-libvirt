@@ -1,30 +1,42 @@
-# Kubernetes 1.21 deployment with no Docker
-## Easy deploy with Vagrant, cloud-init, ansible and Virtualbox
+# Kubernetes 1.23 deployment with no Docker
+## Easy deploy with Terraform, cloud-init, ansible and KVM
 ## Install required tools
 
-1. Virtualbox
-2. Vagrant
+1. KVM
+2. Terraform
 3. Ansible
 
-> **tested with Vagrant 2.2.16, ansible 2.10.8, virtualbox v6.1.22 on a MacOS but it should work on all systems**
+KVM is virtualization module that is loaded inside the Linux kernel and then linux kernel start working as a KVM hypervisor. KVM stands for Kernel based Virtual Machine. Before start installing KVM on any Linux System we have to make sure that our system’s processor supports hardware virtualization extensions like Intel VT or AMD-V.
 
-This code will get you a 3 Vbox machines setup, each node with 1vcpu and 2GB of memory RAM with kubernetes 1.21 running with Containerd as the container engine, so no docker-shim ;)
+Following this guide you will have by the end a Kubeneters Cluster 1.23 with 1 master and 2 nodes, this is the fastet way to have a up and running K8S for your lab environment with Metal-LB, ingress-nginx installed with Helm Chart.
 
-The method of ingress, we choosed to install Metal LB and Ingress Nginx Controller, so we could have Loadbalance support on a Bare Metal installation.
+To provision all that you'll use Terraform and Ansible.
 
-Vagrant assume you have your first NIC as a virtualbox NAT to work properly, this causes every machine to have the same IP 10.0.2.15
-
-As I wanted that the Kubernetes Cluster to be reachable by my local network I did setup 3 others NIC interfaces
-
-Interface | VBox Type 
-:---: | :---:
-enp0s8 | Internal
-enp0s9 | Bridge
-enp0s10 | Bridge
-
-> The internal network is not being used for now, just for convinience
-
-> We have 2 NIC´s as bridge because Metal LB require a pool of IP´s that is not being used by the Kubernetes Cluster
+## Lab details
+### k8s-master
+* OS : OpenSUSE Leap 15.3
+* Hostname : k8s-master
+* IP address : 192.168.2.60
+* Metal-LB : 192.168.2.50
+* RAM : 4 GB
+* CPU = 2
+* Disk = 40 GB Free Space ( /var/lib/libvirtd)
+### k8s-worker1
+* OS : OpenSUSE Leap 15.3
+* Hostname : k8s-worker1
+* IP address : 192.168.2.61
+* Metal-LB : 192.168.2.51
+* RAM : 4 GB
+* CPU = 2
+* Disk = 40 GB Free Space ( /var/lib/libvirtd)
+### k8s-worker2
+* OS : OpenSUSE Leap 15.3
+* Hostname : k8s-worker1
+* IP address : 192.168.2.62
+* Metal-LB : 192.168.2.52
+* RAM : 4 GB
+* CPU = 2
+* Disk = 40 GB Free Space ( /var/lib/libvirtd)
 
 ### Ansible Playbooks
 
