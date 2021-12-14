@@ -83,18 +83,18 @@ Now Start the Yast2 tool,
 ![](https://github.com/FelipeMiranda/kubernetes-libvirt/blob/main/docs/images/Add-Bridge-SUSE-KVM.jpg?raw=true)
 
 In the next window select the Device type as “Bridge” and Configuration Name as “br0”
-![](docs/image/Device-Type-Bridge-Name-OpenSUSE-KVM.jpg)
+![](https://github.com/FelipeMiranda/kubernetes-libvirt/blob/main/docs/images/Device-Type-Bridge-Name-OpenSUSE-KVM.jpg?raw=true)
 
 click on Next,
 
 In the Next Window, choose Statically assigned IP Option, Specify the IP address for Bridge, netmask and Hostname, i am assigning the same IP address that were assigned to my LAN Card eth0
-![](docs/image/Br0-IP-address-SUSE-KVM.jpg)
+![](https://github.com/FelipeMiranda/kubernetes-libvirt/blob/main/docs/images/Br0-IP-address-SUSE-KVM.jpg?raw=true)
 
 Now Select the “Bridged Devices” Option and then select LAN Card that you want to associate with br0, in my case it was eth0
-![](docs/image/Select-Interface-Bride-SUSE-KVM.jpg)
+![](https://github.com/FelipeMiranda/kubernetes-libvirt/blob/main/docs/images/Select-Interface-Bride-SUSE-KVM.jpg?raw=true)
 
 Click on Next to finish the configuration
-![](docs/image/Save-Bridge-SUSE-KVM.jpg)
+![](https://github.com/FelipeMiranda/kubernetes-libvirt/blob/main/docs/images/Save-Bridge-SUSE-KVM.jpg?raw=true)
 
 click OK to write device configuration
 
