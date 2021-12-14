@@ -80,7 +80,7 @@ $ sudo zypper install bridge-utils
 Now Start the Yast2 tool,
 
 **Yast2** –> **Network Settings** –> click on Add option
-![](docs/image/Add-Bridge-SUSE-KVM.jpg)
+![](https://github.com/FelipeMiranda/kubernetes-libvirt/blob/main/docs/images/Add-Bridge-SUSE-KVM.jpg?raw=true)
 
 In the next window select the Device type as “Bridge” and Configuration Name as “br0”
 ![](docs/image/Device-Type-Bridge-Name-OpenSUSE-KVM.jpg)
