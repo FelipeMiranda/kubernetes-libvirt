@@ -38,7 +38,7 @@ To provision all that you'll use Terraform and Ansible.
 * CPU = 2
 * Disk = 40 GB Free Space ( /var/lib/libvirtd)
 
-### Requiriments
+## Requiriments
 #### OpenSUSE 15.3 with KVM
 1. Verify Whether Your System’s Processor Support Hardware Virtualization
 ```
