@@ -46,10 +46,12 @@ $ sudo egrep -c '(vmx|svm)' /proc/cpuinfo
 2
 ```
 If output of below command is equal to 1 or more than 1 then we can say hardware virtualization is enabled else reboot your system, go to bios settings and enable the hardware virtualization by enabling the Intel VT or AMD virtualization
+
 2. Install KVM and its dependencies using Zypper command
 ```
 $ sudo zypper -n install patterns-openSUSE-kvm_server patterns-server-kvm_tools
 ```
+
 3. Start and enable libvirtd service
 ```
 $ sudo systemctl enable libvirtd
@@ -69,6 +71,7 @@ $ sudo modprobe kvm-intel
 ```
 $ sudo modprobe kvm-amd
 ```
+
 4. Create Bridge and add Interface to it
 Let’s create a bride with name Br0 but before make sure bridge-utils package is installed, in case it is not installed then use the below zypper command to install it,
 ```
@@ -81,6 +84,31 @@ Now Start the Yast2 tool,
 
 In the next window select the Device type as “Bridge” and Configuration Name as “br0”
 ![](docs/image/Device-Type-Bridge-Name-OpenSUSE-KVM.jpg)
+
+click on Next,
+
+In the Next Window, choose Statically assigned IP Option, Specify the IP address for Bridge, netmask and Hostname, i am assigning the same IP address that were assigned to my LAN Card eth0
+![](docs/image/Br0-IP-address-SUSE-KVM.jpg)
+
+Now Select the “Bridged Devices” Option and then select LAN Card that you want to associate with br0, in my case it was eth0
+![](docs/image/Select-Interface-Bride-SUSE-KVM.jpg)
+
+Click on Next to finish the configuration
+![](docs/image/Save-Bridge-SUSE-KVM.jpg)
+
+click OK to write device configuration
+
+To verify whether bridge has been created successfully or not, type the below command from the terminal,
+```
+$ ip a s br0
+3: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default qlen 1000
+link/ether 00:0c:29:63:d5:ea brd ff:ff:ff:ff:ff:ff
+inet 192.168.0.107/24 brd 192.168.0.255 scope global br0
+valid_lft forever preferred_lft forever
+inet6 fe80::20c:29ff:fe63:d5ea/64 scope link
+valid_lft forever preferred_lft forever
+```
+
 ### Ansible Playbooks
 
 There´s 3 playbooks, that are only executed on the 3rd node, because of a Vagrant limitation on a multi-machine cenario.
